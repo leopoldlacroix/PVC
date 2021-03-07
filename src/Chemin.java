@@ -39,6 +39,10 @@ public class Chemin {
         return this.chemin.get(this.chemin.size() - 1);
     }
 
+    /**
+     * boucle
+     * @return
+     */
 	public Chemin end() {
 		this.chemin.add(this.chemin.get(0));
         return this;

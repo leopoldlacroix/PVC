@@ -19,9 +19,12 @@ public class ResClub {
         //definit la ville de depart et 
         ArrayList<Ville> villesRestantes = new ArrayList<Ville>(carte.villes);
         
+        //on demarre avec un chemin petit "opti"
         this.chemin = new Chemin().add(carte.villeDepart);
+        this.chemin.add(villesRestantes.remove(0));
+        this.chemin.add(villesRestantes.remove(0));
+        this.chemin.end();
 
-        State startState = new State(startChemin,startVillesRestantes);
 
         //debut boucle
         ArrayList<State> nextStates = new ArrayList<State>();
