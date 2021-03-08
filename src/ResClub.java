@@ -1,8 +1,10 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ResClub {
 
     private Chemin chemin;
+
     /**
      * 
      * @param carte
@@ -10,82 +12,82 @@ public class ResClub {
      */
     public ResClub(Carte carte, Panel panel) {
 
-        if(panel != null){
+        if (panel != null) {
             panel.chemins.add(this.chemin);
-            panel.fps = 5/ (double) (carte.nombre_de_villes - 3);
+            panel.fps = 5 / (double) (carte.nombre_de_villes - 3);
             System.out.println(panel.fps);
         }
 
-        //definit la ville de depart et 
+        // definit la ville de depart et
         ArrayList<Ville> villesRestantes = new ArrayList<Ville>(carte.villes);
-        
-        this.chemin = new Chemin().add(carte.villeDepart);
 
-        State startState = new State(startChemin,startVillesRestantes);
+        // on demarre avec un chemin petit "opti"
+        this.chemin = new Chemin().add(-1, carte.villeDepart);
+        this.chemin.add(-1, villesRestantes.remove(0));
+        this.chemin.add(-1, villesRestantes.remove(0));
+        this.chemin.end();
 
-        //debut boucle
-        ArrayList<State> nextStates = new ArrayList<State>();
-        nextStates.add(startState);
-        
-        State state;
-        do {
-            this.statesChacked++;
+        // on rajoute les villes petit a petit en les inserants au meilleur endroit
+        while (villesRestantes.size() != carte.nombre_de_villes + 1) {
 
-            // le state suivant dont la distance et la plus petite
-            nextStates.sort(new sortState());
-            state = nextStates.remove(0);
-
-            if(panel != null){
-                panel.chemins.set(0, state.chemin);
-                panel.text = ""+this.statesChacked;
+            if (panel != null) {
+                panel.chemins.set(0, this.chemin);
                 panel.majPanel();
             }
 
-            //recupere tous les etats possibles suivants
-            for (Ville ville : state.villesRestantes) {
-                State nextState = getNextState(state,ville);
-                nextStates.add(nextState);
-            }
-            
-            //s'il n'y a plus de villes restante il faut tester la boucle pour la rajouter dans la liste
-            if(state.villesRestantes.size() == 0){
-                
-                State nextState = new State(state).end();
-                nextStates.add(nextState);
-            }
-        } while (!state.isGoal);
+            ArrayList<Chemin> nextChemins = new ArrayList<Chemin>();
 
-        this.chemin = state.chemin;
+            for (Ville ville : villesRestantes) {
+                Chemin nextChemin = bestInsert(ville, this.chemin);
+                nextChemins.add(nextChemin);
+            }
 
-        if(panel != null){
+            nextChemins.sort(new sortByDistance());
+            this.chemin = nextChemins.get(0);
+            Ville villeAdded = this.chemin.lastAdded;
+            villesRestantes.remove(villeAdded);
+
+        }
+
+        if (panel != null) {
             panel.chemins.set(0, this.chemin);
             panel.majPanel();
         }
 
     }
 
-    private State getNextState(State state, Ville ville) {
-        State stateCopy = new State(state);
-        stateCopy.forward(ville);
-        return stateCopy;
+    /**
+     * finds the best place to insert villle in chemin
+     * 
+     * @param ville
+     * @param chemin
+     * @return
+     */
+    private Chemin bestInsert(Ville ville, Chemin chemin) {
+        ArrayList<Chemin> potentialPaths = new ArrayList<Chemin>();
+        for (int i = 1; i < chemin.size(); i++) {
+            Chemin potentialPath = new Chemin(chemin);
+            potentialPath.add(i, ville);
+            potentialPaths.add(potentialPath);
+        }
+        potentialPaths.sort(new sortByDistance());
+        return potentialPaths.get(0);
     }
 
     public Chemin resultat() {
         return chemin;
     }
-    
-    public class sortByDistanceSpe implements Comparator <Ville> {
 
-        private Ville villeRef;
+    /**
+     * sort paths by distance
+     */
+    public class sortByDistance implements Comparator<Chemin> {
 
-        public sortByDistanceSpe(Ville ville){
-            this.villeRef = ville;
-        }
+        public int compare(Chemin chemin1, Chemin chemin2) {
 
-        public int compare(Ville ville1, Ville ville2) {
+            int diff = (int) Math.ceil(chemin1.distance() - chemin2.distance());
 
-            int diff = (int) Math.ceil(ville1.distanceTo(this.villeRef) - ville2.distanceTo(this.villeRef));
-            if(diff>0){
+            if (diff > 0) {
                 return 1;
             }
             return -1;
