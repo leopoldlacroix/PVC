@@ -4,6 +4,7 @@ import java.util.Comparator;
 public class ResClub {
 
     private Chemin chemin;
+
     /**
      * 
      * @param carte
@@ -11,25 +12,25 @@ public class ResClub {
      */
     public ResClub(Carte carte, Panel panel) {
 
-        if(panel != null){
+        if (panel != null) {
             panel.chemins.add(this.chemin);
-            panel.fps = 5/ (double) (carte.nombre_de_villes - 3);
+            panel.fps = 5 / (double) (carte.nombre_de_villes - 3);
             System.out.println(panel.fps);
         }
 
-        //definit la ville de depart et 
+        // definit la ville de depart et
         ArrayList<Ville> villesRestantes = new ArrayList<Ville>(carte.villes);
-        
-        //on demarre avec un chemin petit "opti"
-        this.chemin = new Chemin().add(carte.villeDepart);
-        this.chemin.add(villesRestantes.remove(0));
-        this.chemin.add(villesRestantes.remove(0));
+
+        // on demarre avec un chemin petit "opti"
+        this.chemin = new Chemin().add(-1, carte.villeDepart);
+        this.chemin.add(-1, villesRestantes.remove(0));
+        this.chemin.add(-1, villesRestantes.remove(0));
         this.chemin.end();
 
-        //on rajoute les villes petit a petit en les inserants au meilleur endroit
-        while(villesRestantes.size() != carte.nombre_de_villes + 1){
+        // on rajoute les villes petit a petit en les inserants au meilleur endroit
+        while (villesRestantes.size() != carte.nombre_de_villes + 1) {
 
-            if(panel != null){
+            if (panel != null) {
                 panel.chemins.set(0, this.chemin);
                 panel.majPanel();
             }
@@ -43,12 +44,12 @@ public class ResClub {
 
             nextChemins.sort(new sortByDistance());
             this.chemin = nextChemins.get(0);
-            Ville villeAdded = this.chemin.get(-2);
+            Ville villeAdded = this.chemin.lastAdded;
             villesRestantes.remove(villeAdded);
 
         }
 
-        if(panel != null){
+        if (panel != null) {
             panel.chemins.set(0, this.chemin);
             panel.majPanel();
         }
@@ -57,6 +58,7 @@ public class ResClub {
 
     /**
      * finds the best place to insert villle in chemin
+     * 
      * @param ville
      * @param chemin
      * @return
@@ -65,7 +67,7 @@ public class ResClub {
         ArrayList<Chemin> potentialPaths = new ArrayList<Chemin>();
         for (int i = 1; i < chemin.size(); i++) {
             Chemin potentialPath = new Chemin(chemin);
-            potentialPath.chemin.add(i, ville);
+            potentialPath.add(i, ville);
             potentialPaths.add(potentialPath);
         }
         potentialPaths.sort(new sortByDistance());
@@ -79,13 +81,13 @@ public class ResClub {
     /**
      * sort paths by distance
      */
-    public class sortByDistance implements Comparator <Chemin> {
+    public class sortByDistance implements Comparator<Chemin> {
 
         public int compare(Chemin chemin1, Chemin chemin2) {
 
             int diff = (int) Math.ceil(chemin1.distance() - chemin2.distance());
 
-            if(diff>0){
+            if (diff > 0) {
                 return 1;
             }
             return -1;
