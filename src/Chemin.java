@@ -35,8 +35,9 @@ public class Chemin {
     }
 
     //dernier element
-    public Ville getLast(){
-        return this.chemin.get(this.chemin.size() - 1);
+    public Ville get(int index){
+        index = (this.chemin.size() + index) % this.chemin.size();
+        return this.chemin.get(index);
     }
 
     /**

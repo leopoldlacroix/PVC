@@ -20,11 +20,11 @@ public class ResNaive {
         while (villesRestantes.size() != 0) {
 
             //la ville ou on s'est arreté
-            Ville villeActuelle = this.chemin.getLast();
+            Ville villeActuelle = this.chemin.get(-1);
 
             //tri la liste des villes restantes en fonction de la distance a la ville actuelle
             try {
-                villesRestantes.sort(new sortByDistance(villeActuelle));
+                villesRestantes.sort(new sortByDistanceSpe(villeActuelle));
             } catch (Exception e) {
                 
                 villesRestantes.sort(new sortByDistanceSpe(villeActuelle));
@@ -47,31 +47,17 @@ public class ResNaive {
         return chemin;
     }
 
-
-    public class sortByDistance implements Comparator <Ville> {
-
-        private Ville villeRef;
-
-        public sortByDistance(Ville ville){
-            this.villeRef = ville;
-        }
-
-        public int compare(Ville ville1, Ville ville2) {
-
-            int diff = (int) Math.ceil(ville1.distanceTo(this.villeRef) - ville2.distanceTo(this.villeRef));
-            if(diff>0){
-                return 1;
-            }
-            return -1;
-        }
-    }
     
     public class sortByDistanceSpe implements Comparator <Ville> {
 
         private Ville villeRef;
 
-        public sortByDistanceSpe(Ville ville){
-            this.villeRef = ville;
+        /**
+         * tri les ville en fonction de la distance a la ville ref
+         * @param villeRef
+         */
+        public sortByDistanceSpe(Ville villeRef){
+            this.villeRef = villeRef;
         }
 
         public int compare(Ville ville1, Ville ville2) {
