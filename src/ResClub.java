@@ -43,7 +43,8 @@ public class ResClub {
 
             nextChemins.sort(new sortByDistance());
             this.chemin = nextChemins.get(0);
-            villesRestantes.remove(this.chemin.get(-2));
+            Ville villeAdded = this.chemin.get(-2);
+            villesRestantes.remove(villeAdded);
 
         }
 
