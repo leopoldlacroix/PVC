@@ -29,7 +29,6 @@ public class ResNaive {
             } catch (Exception e) {
 
                 villesRestantes.sort(new sortByDistanceSpe(villeActuelle));
-                Main.pCoors(villesRestantes);
             }
 
             // ajoute la ville la plus proche et la supprime des villes restantes

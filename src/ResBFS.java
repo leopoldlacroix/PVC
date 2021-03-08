@@ -16,7 +16,6 @@ public class ResBFS {
         if (panel != null) {
             panel.chemins.add(this.chemin);
             panel.fps = 5 / (double) Main.fact(carte.nombre_de_villes);
-            System.out.println(panel.fps);
         }
 
         // depart

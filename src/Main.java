@@ -5,17 +5,16 @@ public class Main {
     public static void main(String[] args) {
 
         // Carte carte = Carte.imporCarte();
-        Carte carte = new Carte(10, Carte.MIN, Carte.MAX);
+        Carte carte = new Carte(4, Carte.MIN, Carte.MAX);
 
         Frame frame = new Frame(carte);
         
         ResClub club = new ResClub(carte, frame.panel);
-        // frame.panel.addChemin(club.resultat());
 
         
-        // ResBFS bfs = new ResBFS(carte, null);
-        // frame.panel.text = "" + bfs.statesChacked;
-        // frame.panel.addChemin(bfs.resultat());
+        ResBFS bfs = new ResBFS(carte, null);
+        frame.panel.text = "" + bfs.statesChacked;
+        frame.panel.addChemin(bfs.resultat());
 
     }
 

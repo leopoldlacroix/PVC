@@ -12,23 +12,27 @@ public class ResClub {
      */
     public ResClub(Carte carte, Panel panel) {
 
+        
         if (panel != null) {
             panel.chemins.add(this.chemin);
             panel.fps = 5 / (double) (carte.nombre_de_villes - 3);
-            System.out.println(panel.fps);
         }
-
+        
         // definit la ville de depart et
         ArrayList<Ville> villesRestantes = new ArrayList<Ville>(carte.villes);
-
+        
         // on demarre avec un chemin petit "opti"
         this.chemin = new Chemin().add(-1, carte.villeDepart);
         this.chemin.add(-1, villesRestantes.remove(0));
         this.chemin.add(-1, villesRestantes.remove(0));
         this.chemin.end();
+        
+        if(carte.nombre_de_villes < 4){
+            return;
+        }
 
         // on rajoute les villes petit a petit en les inserants au meilleur endroit
-        while (villesRestantes.size() != carte.nombre_de_villes + 1) {
+        while (villesRestantes.size() != 0) {
 
             if (panel != null) {
                 panel.chemins.set(0, this.chemin);
