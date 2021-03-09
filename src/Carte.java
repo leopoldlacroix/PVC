@@ -58,7 +58,7 @@ class Carte implements Serializable{
         return true;
     }
 
-    public static Carte imporCarte(){
+    public static Carte importCarte(){
 
         try {
             FileInputStream fis = new FileInputStream(Carte.file);
